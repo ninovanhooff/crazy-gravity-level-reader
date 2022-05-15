@@ -33,11 +33,11 @@ void write_platforms(FILE *fp, struct cgl *cgl)
         // common
         write_int_entry(fp, "sType", PLATFORM);
         write_int_entry(fp, "pType", pType);
-        write_int_entry(fp, "x", ap->base->x / LUA_UNIT_PX);
-        write_int_entry(fp, "y", ap->base->y / LUA_UNIT_PX);
+        write_int_entry(fp, "x", ap->base->x / LUA_UNIT_PX + 1);
+        write_int_entry(fp, "y", ap->base->y / LUA_UNIT_PX - 2);
         write_int_entry(fp, "w", ap->base->w / LUA_UNIT_PX);
         write_int_entry(fp, "h", LUA_PLATFORM_HEIGHT);
-        write_int_entry(fp, "amount", ap->num_cargo);
+        write_int_entry(fp, "amnt", ap->num_cargo);
 
         if (pType == HOME)
         {

@@ -1,1 +1,1 @@
-clear; gcc -std=c99 -Wall -o cglreader *.c && ./cglreader LEVEL20.cgl
+clear; gcc -std=c99 -Wall -o cglreader *.c && ./cglreader LEVEL01

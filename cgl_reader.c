@@ -17,9 +17,11 @@
       for(item = (array) + count; keep; keep = !keep)
 
 int main(int argc, char *argv[]){
-    printf("file path:%s\n", argv[1]);
+    printf("file base name without extension:%s\n", argv[1]);
    
-    struct cgl *cgl = read_cgl(argv[1], NULL);
+    char* cglPath;
+    asprintf(&cglPath, "%s.CGL", argv[1]);
+    struct cgl *cgl = read_cgl(cglPath, NULL);
     if (cgl == NULL)
     {
         return 1;
@@ -43,8 +45,10 @@ int main(int argc, char *argv[]){
        //printf("lua type: %zu\n", map_cg_platform(aps->type));
     }
 
+    char* outName;
+    asprintf(&outName, "%s_specials.lua", argv[1]);
     FILE *fp;
-    fp = fopen("test.lua","w");
+    fp = fopen(outName,"w");
     write_lua(fp, cgl);
     fclose(fp);
 
