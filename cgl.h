@@ -232,6 +232,8 @@ enum gate_type{
 	GateRight,
 	GateBottom
 };
+
+//* A one-way gate that doesn't require a key */
 struct gate {
 	struct tile *base[5],
 		    *bar,
@@ -244,6 +246,8 @@ struct gate {
 	double max_len, len;
 	int active;
 };
+
+//* A two-way gate that requires one or more keys to open */
 struct lgate {
 	struct tile *base[5],
 		    *bar,

@@ -20,6 +20,11 @@ int main(int argc, char *argv[]){
     printf("file path:%s\n", argv[1]);
    
     struct cgl *cgl = read_cgl(argv[1], NULL);
+    if (cgl == NULL)
+    {
+        return 1;
+    }
+    
     printf("size: %zu, %zu\n", cgl->width, cgl->height);
     //printf("airports: %zu, %zu\n", cgl->airports->type, cgl->height);
     struct airport *aps = cgl->airports;
@@ -34,10 +39,14 @@ int main(int argc, char *argv[]){
    
     for (struct airport *start = aps; aps < start + cgl->nairports; ++aps) {
        printf("num_cargo: %zu\n", aps->num_cargo);
+       //printf("cg type: %zu\n", aps->type);
+       //printf("lua type: %zu\n", map_cg_platform(aps->type));
     }
 
-    FILE *fptr;
-    fptr = fopen("test.lua","w");
+    FILE *fp;
+    fp = fopen("test.lua","w");
+    write_lua(fp, cgl);
+    fclose(fp);
 
 
     return 0;

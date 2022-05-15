@@ -5,9 +5,39 @@
 #include <stdio.h>
 #include <stdint.h>
 
+/** pixels per unit in lua files) */
+#define LUA_UNIT_PX 8
+
+/** platform height in lua units (8px) includes space for cago, fuel, etc. */
+#define LUA_PLATFORM_HEIGHT 6
+
+/** special objec types */
+enum sTypes {
+    PLATFORM = 8,
+    BLOWER = 9, // CG: Fan
+    MAGNET = 10,
+    ROTATOR = 11,
+    CANNON = 12,
+    ROD = 13,
+    ONE_WAY = 14,
+    BARRIER = 15 
+};
+
+enum pTypes {
+    HOME = 1,
+    FREIGHT = 2,
+    FUEL = 3,
+    EXTRAS = 4,
+    KEY = 5
+};
+
+
 void write_lua(FILE *fp, struct cgl *cgl);
 void write_table_start(FILE *fp);
-
+void write_platforms(FILE *fp, struct cgl *cgl);
+void write_table_end(FILE *fp);
+void write_int_entry(FILE *fp, char* key, int value);
+enum pTypes map_cg_platform(int cgType);
 
 
 #endif
