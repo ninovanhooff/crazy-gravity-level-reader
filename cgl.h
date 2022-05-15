@@ -36,6 +36,26 @@ enum {
 	DEFAULT_LIFE = 5
 };
 
+struct ship {
+	double x, y;
+	double vx, vy;
+	double rot, rot_speed;
+	int engine;
+	int keys[4];
+	/* the size of cargo hold */
+	size_t max_freight;
+	/* freight currently on board */
+	size_t num_freight;
+	struct freight *freight;
+	double max_vx, max_vy;
+	/* reference to the airport on which the ship is waiting */
+	struct airport *airport;
+	double fuel;
+	int has_turbo;
+	int dead;
+	int life;
+};
+
 #define CGL_MAGIC "\xe1\xd2\xc3\xb4"
 enum cgl_sizes {
 	/* side length in pixels of the smallest game unit */

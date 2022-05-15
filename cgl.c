@@ -18,7 +18,7 @@
  */
 
 #include "cgl.h"
-//#include "mathgeom.h"
+#include "mathgeom.h"
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
@@ -379,14 +379,14 @@ int read_block(struct tile *tiles, size_t num, int x, int y, FILE* fp)
 
 /* Auxilliary functions to extract a single rectangle or tile description from
  * an array of int16_t */
-inline void set_dims(struct tile *t, int x, int y, int w, int h,
+static inline void set_dims(struct tile *t, int x, int y, int w, int h,
 		int tex_x, int tex_y)
 {
 	t->x = x, t->y = y;
 	t->w = w, t->h = h;
 	t->tex_x = tex_x, t->tex_y = tex_y;
 }
-inline void set_type(struct tile *t, enum type type, enum collision_test test,
+static inline void set_type(struct tile *t, enum type type, enum collision_test test,
 		enum collision_type action, void *data)
 {
 	t->type = type;
@@ -394,30 +394,30 @@ inline void set_type(struct tile *t, enum type type, enum collision_test test,
 	t->collision_type = action;
 	t->data = data;
 }
-inline void parse_point(const int16_t *data, vector *a, vector *b)
+static inline void parse_point(const int16_t *data, vector *a, vector *b)
 {
 	a->x = data[0], a->y = data[1];
 	b->x = data[2], b->y = data[3];
 }
-inline void parse_rect(const int16_t *data, struct rect *rect)
+static inline void parse_rect(const int16_t *data, struct rect *rect)
 {
 	rect->x = data[0], rect->y = data[1];
 	rect->w = data[2], rect->h = data[3];
 }
-inline void parse_tile_normal(const int16_t *data, struct tile *tile)
+static inline void parse_tile_normal(const int16_t *data, struct tile *tile)
 {
 	tile->x = data[0], tile->y = data[1];
 	tile->w = data[2], tile->h = data[3];
 	tile->tex_x = data[4], tile->tex_y = data[5];
 }
-inline void parse_tile_simple(const int16_t *data, struct tile *tile,
+static inline void parse_tile_simple(const int16_t *data, struct tile *tile,
 		unsigned width, unsigned height)
 {
 	tile->x = data[0], tile->y = data[1];
 	tile->tex_x = data[2], tile->tex_y = data[3];
 	tile->w = width, tile->h = height;
 }
-inline void parse_tile_minimal(const int16_t *data, struct tile *tile,
+static inline void parse_tile_minimal(const int16_t *data, struct tile *tile,
 		unsigned w, unsigned h, unsigned tex_x, unsigned tex_y)
 {
 	tile->x = data[0], tile->y = data[1];
@@ -679,7 +679,7 @@ int cgl_read_one_pipe(struct bar *bar, FILE *fp)
 	return 0;
 }
 
-inline void parse_packed_tiles(const int16_t *data, size_t num, struct tile *tiles[],
+static inline void parse_packed_tiles(const int16_t *data, size_t num, struct tile *tiles[],
 		const vector *dims)
 {
 	for (size_t i = 0; i < num; ++i)
