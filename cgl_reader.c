@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cgl_reader.h"
+#include "lua_writer.h"
 #include "freecg/cgl.h"
 
 #define for_each_item(item, list) \
@@ -16,23 +17,28 @@
       for(item = (array) + count; keep; keep = !keep)
 
 int main(int argc, char *argv[]){
-   printf("file path:%s\n", argv[1]);
+    printf("file path:%s\n", argv[1]);
    
-   struct cgl *cgl = read_cgl(argv[1], NULL);
-   printf("size: %zu, %zu\n", cgl->width, cgl->height);
-   //printf("airports: %zu, %zu\n", cgl->airports->type, cgl->height);
-   struct airport *aps = cgl->airports;
-   printf("num aps: %zu\n", cgl->nairports);
-   //struct airport ap;
+    struct cgl *cgl = read_cgl(argv[1], NULL);
+    printf("size: %zu, %zu\n", cgl->width, cgl->height);
+    //printf("airports: %zu, %zu\n", cgl->airports->type, cgl->height);
+    struct airport *aps = cgl->airports;
+    printf("num aps: %zu\n", cgl->nairports);
+    printf("num magnets: %zu\n", cgl->nmagnets);
+    //struct airport ap;
 
-   // for (size_t j = 0; j < cgl->nairports; ++j) {
-   //    printf("num_cargo: %d\n", aps->num_cargo);
-   //    aps++;
-   // }
+    // for (size_t j = 0; j < cgl->nairports; ++j) {
+    //    printf("num_cargo: %d\n", aps->num_cargo);
+    //    aps++;
+    // }
    
-   for (struct airport *start = aps; aps < start + cgl->nairports; ++aps) {
-      printf("num_cargo: %zu\n", aps->num_cargo);
-   }
+    for (struct airport *start = aps; aps < start + cgl->nairports; ++aps) {
+       printf("num_cargo: %zu\n", aps->num_cargo);
+    }
 
-   return 0;
+    FILE *fptr;
+    fptr = fopen("test.lua","w");
+
+
+    return 0;
 }

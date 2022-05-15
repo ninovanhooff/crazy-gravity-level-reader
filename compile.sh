@@ -1,0 +1,1 @@
+clear; gcc -std=c99 -Wall -O1 -o cglreader cgl.c geometry.c cgl_reader.c lua_writer.c && ./cglreader LEVEL20.cgl

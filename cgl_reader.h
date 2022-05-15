@@ -1,14 +1,4 @@
 #ifndef CGL_READER_H
 #define CGL_READER_H
 
-enum {
-	BAR_MIN_LEN = 2,
-	GATE_BAR_MIN_LEN = 2,
-	ENGINE_ACCEL = 130,
-	GRAVITY = 23,
-	MAX_FUEL = 16,
-	FUEL_BARREL = 6,
-	DEFAULT_LIFE = 5
-};
-
 #endif
