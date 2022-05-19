@@ -46,7 +46,7 @@ int main(int argc, char *argv[]){
     }
 
     char* outName;
-    asprintf(&outName, "%s_specials.lua", argv[1]);
+    asprintf(&outName, "%s_intermediate.lua", argv[1]);
     FILE *fp;
     fp = fopen(outName,"w");
     write_lua(fp, cgl);

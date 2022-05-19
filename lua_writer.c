@@ -9,17 +9,30 @@
 
 void write_lua(FILE *fp, struct cgl *cgl)
 {
-    write_table_start(fp);
+    write_file_start(fp);
+    write_table_start(fp, NULL);
+    
+    write_table_start(fp, "levelProps");
+    write_level_props(fp, cgl);
+    write_table_end(fp, false);
+    
+    write_table_start(fp, "specialT");
     write_platforms(fp, cgl);
-    write_table_end(fp);
+    write_table_end(fp, true);
+
+    write_table_end(fp, true);
 }
 
-void write_table_start(FILE *fp)
+void write_level_props(FILE *fp, struct cgl *cgl)
 {
-    fprintf(fp,
-            "-- CGLLUA1\n"
-            "return {\n");
+    write_int_entry(fp, "sizeX", cgl->width * LUA_UNITS_PER_CG_BLOCK);
+    write_int_entry(fp, "sizeY", cgl->height * LUA_UNITS_PER_CG_BLOCK);
+    write_int_entry(fp, "lives", 5); // not sure if stored in cgl
+    write_int_entry(fp, "fuel", 6000);
+    write_int_entry(fp, "bg", 0);
+    write_int_entry(fp, "tLimit", 300);
 }
+
 void write_platforms(FILE *fp, struct cgl *cgl)
 {
     struct airport *ap = cgl->airports;
@@ -57,7 +70,7 @@ void write_platforms(FILE *fp, struct cgl *cgl)
             int extras_idx = ap->c.extras[0];
             write_int_entry(
                 fp, "type",
-                extras_idx
+                extras_idx + 1
             );
         }
 
@@ -65,7 +78,7 @@ void write_platforms(FILE *fp, struct cgl *cgl)
         {
             write_int_entry(
                 fp, "color",
-                ap->c.key
+                ap->c.key + 1
             );
         }
 
@@ -74,9 +87,33 @@ void write_platforms(FILE *fp, struct cgl *cgl)
     }
 }
 
-void write_table_end(FILE *fp)
+
+
+void write_file_start(FILE *fp)
 {
-    fprintf(fp, "}\n");
+    fprintf(fp, 
+    "-- CGLLUA1\n"
+    "return\n"
+    );
+}
+void write_table_start(FILE *fp, char *name)
+{
+    if (name)
+    {
+        fprintf(fp, "%s={\n", name);
+    } else {
+        fprintf(fp, "{\n");
+    }
+}
+
+void write_table_end(FILE *fp, bool isLast)
+{
+    if (isLast)
+    {
+        fprintf(fp, "}\n");    
+    } else {
+        fprintf(fp, "},\n");
+    }
 }
 
 void write_int_entry(FILE *fp, char *key, int value)
