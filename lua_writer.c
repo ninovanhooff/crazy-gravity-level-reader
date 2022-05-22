@@ -19,6 +19,7 @@ void write_lua(FILE *fp, struct cgl *cgl)
     write_table_start(fp, "specialT");
     write_platforms(fp, cgl);
     write_fans(fp, cgl);
+    write_magnets(fp, cgl);
     write_table_end(fp, true);
 
     write_table_end(fp, true);
@@ -147,6 +148,63 @@ void write_fans(FILE *fp, struct cgl *cgl){
     }
 }
 
+void write_magnets(FILE *fp, struct cgl *cgl){
+    struct magnet *magnet = cgl->magnets;
+
+    for (struct magnet *start = magnet; magnet < start + cgl->nmagnets; ++magnet)
+    {
+        enum directions egDir = map_cg_direction(magnet->dir);
+        int distance, x, y, w, h;
+
+        switch (egDir)
+        {
+        case UP:
+        case LEFT:
+            x = magnet->act->x / LUA_UNIT_PX + 1;
+            y = magnet->act->y / LUA_UNIT_PX + 1;
+            break;
+        case DOWN:
+        case RIGHT:
+            x = magnet->base->x / LUA_UNIT_PX + 1;
+            y = magnet->base->y / LUA_UNIT_PX + 1;
+            break;
+        default:
+            assert(!"Not a valid direction type!");
+            break;
+        }
+
+        switch (egDir)
+        {
+        case UP:
+        case DOWN:
+            distance = ceil(magnet->act->h / LUA_UNIT_PX);
+            w = magnet->act->w / LUA_UNIT_PX;
+            h = (magnet->base->h + magnet->magn->h + magnet->act->h) / LUA_UNIT_PX;
+            break;
+        case LEFT:
+        case RIGHT:
+            distance = ceil(magnet->act->w / LUA_UNIT_PX);
+            w = (magnet->base->w + magnet->magn->w + magnet->act->w) / LUA_UNIT_PX;
+            h = magnet->base->h / LUA_UNIT_PX;
+            break;
+        default:
+            assert(!"Not a valid direction type!");
+            break;
+        }
+
+        fprintf(fp, "{\n");
+
+        write_int_entry(fp, "sType", MAGNET);
+        write_int_entry(fp, "x", x);
+        write_int_entry(fp, "y", y);
+        write_int_entry(fp, "w", w);
+        write_int_entry(fp, "h", h);
+        write_int_entry(fp, "direction", egDir);
+        write_int_entry(fp, "distance", distance);
+
+        fprintf(fp, "},\n");
+    }
+}
 
 
 void write_file_start(FILE *fp)
