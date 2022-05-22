@@ -20,7 +20,7 @@ int main(int argc, char *argv[]){
     printf("file base name without extension:%s\n", argv[1]);
    
     char* cglPath;
-    asprintf(&cglPath, "%s.CGL", argv[1]);
+    asprintf(&cglPath, "test-levels/%s.CGL", argv[1]);
     struct cgl *cgl = read_cgl(cglPath, NULL);
     if (cgl == NULL)
     {
@@ -32,6 +32,7 @@ int main(int argc, char *argv[]){
     struct airport *aps = cgl->airports;
     printf("num aps: %zu\n", cgl->nairports);
     printf("num magnets: %zu\n", cgl->nmagnets);
+    printf("num fans: %zu\n", cgl->nfans);
     //struct airport ap;
 
     // for (size_t j = 0; j < cgl->nairports; ++j) {
@@ -46,7 +47,7 @@ int main(int argc, char *argv[]){
     }
 
     char* outName;
-    asprintf(&outName, "%s_intermediate.lua", argv[1]);
+    asprintf(&outName, "intermediates/%s_intermediate.lua", argv[1]);
     FILE *fp;
     fp = fopen(outName,"w");
     write_lua(fp, cgl);

@@ -18,6 +18,7 @@ void write_lua(FILE *fp, struct cgl *cgl)
     
     write_table_start(fp, "specialT");
     write_platforms(fp, cgl);
+    write_fans(fp, cgl);
     write_table_end(fp, true);
 
     write_table_end(fp, true);
@@ -83,7 +84,66 @@ void write_platforms(FILE *fp, struct cgl *cgl)
         }
 
         fprintf(fp, "},\n");
-        // fprintf("num_cargo: %zu\n", aps->num_cargo);
+    }
+}
+
+void write_fans(FILE *fp, struct cgl *cgl){
+    struct fan *fan = cgl->fans;
+
+    for (struct fan *start = fan; fan < start + cgl->nfans; ++fan)
+    {
+        enum directions egDir = map_cg_direction(fan->dir);
+        enum gratings egGrating = map_cg_power(fan->power);
+        int distance, x, y, w, h;
+
+        switch (egDir)
+        {
+        case UP:
+        case LEFT:
+            x = fan->act->x / LUA_UNIT_PX + 1;
+            y = fan->act->y / LUA_UNIT_PX + 1;
+            break;
+        case DOWN:
+        case RIGHT:
+            x = fan->base->x / LUA_UNIT_PX + 1;
+            y = fan->base->y / LUA_UNIT_PX + 1;
+            break;
+        default:
+            assert(!"Not a valid direction type!");
+            break;
+        }
+
+        switch (egDir)
+        {
+        case UP:
+        case DOWN:
+            distance = ceil(fan->act->h / LUA_UNIT_PX);
+            w = fan->act->w / LUA_UNIT_PX;
+            h = (fan->base->h + fan->pipes->h + fan->act->h) / LUA_UNIT_PX;
+            break;
+        case LEFT:
+        case RIGHT:
+            distance = ceil(fan->act->w / LUA_UNIT_PX);
+            w = (fan->base->w + fan->pipes->w + fan->act->w) / LUA_UNIT_PX;
+            h = fan->base->h / LUA_UNIT_PX;
+            break;
+        default:
+            assert(!"Not a valid direction type!");
+            break;
+        }
+
+        fprintf(fp, "{\n");
+
+        write_int_entry(fp, "sType", BLOWER);
+        write_int_entry(fp, "x", x);
+        write_int_entry(fp, "y", y);
+        write_int_entry(fp, "w", w);
+        write_int_entry(fp, "h", h);
+        write_int_entry(fp, "direction", egDir);
+        write_int_entry(fp, "grating", egGrating);
+        write_int_entry(fp, "distance", distance);
+
+        fprintf(fp, "},\n");
     }
 }
 
@@ -140,3 +200,37 @@ enum pTypes map_cg_platform(int cgType)
         return -1;
     }
 }
+
+enum directions map_cg_direction(int cgDir){
+    switch (cgDir)
+    {
+    case Up:
+        return UP;
+    case Down:
+        return DOWN;
+    case Left: 
+        return LEFT;
+    case Right:
+        return RIGHT;
+    default:
+        assert(!"Not a valid direction type!");
+        return -1;
+    }
+}
+
+
+enum gratings map_cg_power(int cgPower)
+{
+    switch (cgPower)
+    {
+    case Hi:
+        return NO;
+    case Low: 
+        return YES; // grating indicates low power
+
+    default:
+        assert(!"Not a valid power type!");
+        return -1;
+    }
+}
+

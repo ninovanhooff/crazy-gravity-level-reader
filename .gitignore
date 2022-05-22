@@ -3,3 +3,9 @@ LEVEL02.CGL
 LEVEL20.CGL
 test.lua
 cglreader
+freecg
+intermediates
+test-levels
+lua-levels
+.DS_Store
+**/.DS_Store
