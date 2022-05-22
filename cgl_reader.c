@@ -3,7 +3,7 @@
 #include <string.h>
 #include "cgl_reader.h"
 #include "lua_writer.h"
-#include "freecg/cgl.h"
+#include "cgl.h"
 
 #define for_each_item(item, list) \
     for(T * item = list->head; item != NULL; item = item->next)
