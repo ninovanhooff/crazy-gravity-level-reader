@@ -19,6 +19,7 @@ void write_lua(FILE *fp, struct cgl *cgl)
     write_table_start(fp, "specialT");
     write_platforms(fp, cgl);
     write_fans(fp, cgl);
+    write_airgens(fp, cgl);
     write_magnets(fp, cgl);
     write_table_end(fp, true);
 
@@ -148,6 +149,67 @@ void write_fans(FILE *fp, struct cgl *cgl){
     }
 }
 
+void write_airgens(FILE *fp, struct cgl *cgl){
+    struct airgen *airgen = cgl->airgens;
+
+    for (struct airgen *start = airgen; airgen < start + cgl->nairgens; ++airgen)
+    {
+        enum directions egDir = map_cg_direction(airgen->dir);
+        enum rotates egRotates = map_cg_spin(airgen->spin);
+        int distance, x, y, w, h;
+
+        switch (egDir)
+        {
+        case UP:
+        case LEFT:
+            x = airgen->act->x / LUA_UNIT_PX + 1;
+            y = airgen->act->y / LUA_UNIT_PX + 1;
+            break;
+        case DOWN:
+        case RIGHT:
+            x = airgen->base->x / LUA_UNIT_PX + 1;
+            y = airgen->base->y / LUA_UNIT_PX + 1;
+            break;
+        default:
+            assert(!"Not a valid direction type!");
+            break;
+        }
+
+        switch (egDir)
+        {
+        case UP:
+        case DOWN:
+            distance = ceil(airgen->act->h / LUA_UNIT_PX);
+            w = airgen->act->w / LUA_UNIT_PX;
+            h = (airgen->base->h + airgen->pipes->h + airgen->act->h) / LUA_UNIT_PX;
+            break;
+        case LEFT:
+        case RIGHT:
+            distance = ceil(airgen->act->w / LUA_UNIT_PX);
+            w = (airgen->base->w + airgen->pipes->w + airgen->act->w) / LUA_UNIT_PX;
+            h = airgen->base->h / LUA_UNIT_PX;
+            break;
+        default:
+            assert(!"Not a valid direction type!");
+            break;
+        }
+
+        fprintf(fp, "{\n");
+
+        write_int_entry(fp, "sType", ROTATOR);
+        write_int_entry(fp, "x", x);
+        write_int_entry(fp, "y", y);
+        write_int_entry(fp, "w", w);
+        write_int_entry(fp, "h", h);
+        write_int_entry(fp, "direction", egDir);
+        write_int_entry(fp, "rotates", egRotates);
+        write_int_entry(fp, "distance", distance);
+
+        fprintf(fp, "},\n");
+    }
+}
+
+
 void write_magnets(FILE *fp, struct cgl *cgl){
     struct magnet *magnet = cgl->magnets;
 
@@ -205,6 +267,7 @@ void write_magnets(FILE *fp, struct cgl *cgl){
         fprintf(fp, "},\n");
     }
 }
+
 
 
 void write_file_start(FILE *fp)
@@ -288,6 +351,20 @@ enum gratings map_cg_power(int cgPower)
 
     default:
         assert(!"Not a valid power type!");
+        return -1;
+    }
+}
+
+enum rotates map_cg_spin(int cgSpin)
+{
+    switch (cgSpin)
+    {
+    case CCW:
+        return COUNTER_CLOCKWISE;
+    case CW: 
+        return CLOCKWISE; 
+    default:
+        assert(!"Not a valid spin type!");
         return -1;
     }
 }
