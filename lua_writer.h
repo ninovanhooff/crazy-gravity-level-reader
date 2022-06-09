@@ -62,6 +62,7 @@ void write_platforms(FILE *fp, struct cgl *cgl);
 void write_fans(FILE *fp, struct cgl *cgl);
 void write_magnets(FILE *fp, struct cgl *cgl);
 void write_airgens(FILE *fp, struct cgl *cgl);
+void write_gates(FILE *fp, struct cgl *cgl);
 void write_table_end(FILE *fp, bool isLast);
 void write_int_entry(FILE *fp, char* key, int value);
 enum pTypes map_cg_platform(int cgType);

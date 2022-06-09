@@ -33,6 +33,7 @@ int main(int argc, char *argv[]){
     printf("num aps: %zu\n", cgl->nairports);
     printf("num magnets: %zu\n", cgl->nmagnets);
     printf("num fans: %zu\n", cgl->nfans);
+    printf("num gates (oneway): %zu\n", cgl->ngates);
     //struct airport ap;
 
     // for (size_t j = 0; j < cgl->nairports; ++j) {

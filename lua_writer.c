@@ -21,6 +21,7 @@ void write_lua(FILE *fp, struct cgl *cgl)
     write_fans(fp, cgl);
     write_airgens(fp, cgl);
     write_magnets(fp, cgl);
+    write_gates(fp, cgl);
     write_table_end(fp, true);
 
     write_table_end(fp, true);
@@ -263,6 +264,134 @@ void write_magnets(FILE *fp, struct cgl *cgl){
         write_int_entry(fp, "h", h);
         write_int_entry(fp, "direction", egDir);
         write_int_entry(fp, "distance", distance);
+
+        fprintf(fp, "},\n");
+    }
+}
+
+
+/** One-way gates */
+void write_gates(FILE *fp, struct cgl *cgl){
+    struct gate *gate = cgl->gates;
+
+    for (struct gate *start = gate; gate < start + cgl->ngates; ++gate)
+    {
+        // only Up or Down for gates
+        enum directions egDir = map_cg_direction(gate->dir);
+        int direction, distance, x, y, w, h;
+        int max_len = gate->max_len / LUA_UNIT_PX;
+        int xToY = -1; // -1 indicates invalid / uninitialized
+
+        printf("gate egDir:%d orientation:%d gateType: %d\n", egDir, gate->orient, gate->type);
+
+        switch (gate->type)
+        {
+        case GateLeft:
+            direction = RIGHT;
+            if (egDir == DOWN)
+            {   
+                // horizontal gate, pass direction from top to bottom
+                xToY = 1;
+            } else { 
+                // horizontal gate, pass direction from bottom to top
+                xToY = 2;
+            }
+            break;
+        case GateTop:
+            direction = DOWN;
+            if (egDir == DOWN)
+            {   
+                // vertical gate, pass direction from right to left
+                xToY = 2;
+            } else { 
+                // vertical gate, pass direction from left to right
+                xToY = 1;
+            }
+            break;
+        case GateRight:
+            direction = LEFT;
+            if (egDir == DOWN)
+            {   
+                // horizontal gate, pass direction from top to bottom
+                xToY = 2;
+            } else { 
+                // horizontal gate, pass direction from bottom to top
+                xToY = 1;
+            }
+            break;
+        case GateBottom:
+            direction = UP;
+            if (egDir == DOWN)
+            {   
+                // vertical gate, pass direction from right to left
+                xToY = 1; //todo
+            } else { 
+                // vertical gate, pass direction from left to right
+                xToY = 2;
+            }
+            break;
+        default:
+            assert(!"Not a valid gate type!");
+            break;
+        }
+
+        printf("direction: %d\n", direction);
+        printf("gate base0X:%d base1X:%d base2X: %d base3X: %d base4X: %d\n", gate->base[0]->x, gate->base[1]->x, gate->base[2]->x, gate->base[3]->x, gate->base[4]->x);    
+        struct tile* topLeftTile;
+        switch (direction)
+        {
+        case UP:
+            topLeftTile = gate->base[0];
+            break;
+        case LEFT:
+        case DOWN:
+            topLeftTile = gate->base[2];
+            break;
+        case RIGHT:
+            topLeftTile = gate->base[0];
+            break;
+        default:
+            assert(!"Not a valid direction type!");
+            break;
+        }
+        x = topLeftTile->x / LUA_UNIT_PX + 1;
+        y = topLeftTile->y / LUA_UNIT_PX + 1;
+
+        switch (egDir)
+        {
+        case UP:
+        case DOWN:
+            distance = ceil(gate->act->h / LUA_UNIT_PX);
+            w = 6;
+            h = max_len + 6;
+            break;
+        case LEFT:
+        case RIGHT:
+            distance = ceil(gate->act->w / LUA_UNIT_PX);
+            w = max_len + 6;
+            h = 6;
+            break;
+        default:
+            assert(!"Not a valid direction type!");
+            break;
+        }
+
+        int endStone = gate->has_end;
+        // set the position of the gate to closed (maximum extension)
+        int pos = distance*LUA_UNIT_PX-endStone*16-4;
+
+        fprintf(fp, "{\n");
+
+        write_int_entry(fp, "sType", ONE_WAY);
+        write_int_entry(fp, "x", x);
+        write_int_entry(fp, "y", y);
+        write_int_entry(fp, "w", w);
+        write_int_entry(fp, "h", h);
+        write_int_entry(fp, "direction", direction);
+        write_int_entry(fp, "distance", distance);
+        write_int_entry(fp, "pos", pos);
+        write_int_entry(fp, "endStrone", endStone);
+        write_int_entry(fp, "XtoY", xToY);
 
         fprintf(fp, "},\n");
     }
