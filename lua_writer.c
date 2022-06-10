@@ -278,11 +278,15 @@ void write_gates(FILE *fp, struct cgl *cgl){
     {
         // only Up or Down for gates
         enum directions egDir = map_cg_direction(gate->dir);
-        int direction, distance, x, y, w, h;
-        int max_len = gate->max_len / LUA_UNIT_PX;
+        int direction, distance, x, y, w, h, pos;
         int xToY = -1; // -1 indicates invalid / uninitialized
+        int endStone = gate->has_end;
 
-        printf("gate egDir:%d orientation:%d gateType: %d\n", egDir, gate->orient, gate->type);
+        int actW = ceil(gate->act->w / LUA_UNIT_PX);
+        int actH = ceil(gate->act->h / LUA_UNIT_PX);
+
+
+        printf("gate egDir:%d orientation:%d gateType: %d gate_max_len: %f\n", egDir, gate->orient, gate->type, gate->max_len);
 
         switch (gate->type)
         {
@@ -337,48 +341,59 @@ void write_gates(FILE *fp, struct cgl *cgl){
 
         printf("direction: %d\n", direction);
         printf("gate base0X:%d base1X:%d base2X: %d base3X: %d base4X: %d\n", gate->base[0]->x, gate->base[1]->x, gate->base[2]->x, gate->base[3]->x, gate->base[4]->x);    
+        printf("gate base0Y:%d base1Y:%d base2Y: %d base3Y: %d base4Y: %d\n", gate->base[0]->y, gate->base[1]->y, gate->base[2]->y, gate->base[3]->y, gate->base[4]->y);    
+
         struct tile* topLeftTile;
+        struct tile* topLeftTileY;
         switch (direction)
         {
         case UP:
             topLeftTile = gate->base[0];
+            topLeftTileY = gate->base[4]; //todo y= baseY -  distance
             break;
         case LEFT:
+            topLeftTile = gate->base[4];
+            topLeftTileY = gate->base[2];
+            break;
         case DOWN:
             topLeftTile = gate->base[2];
+            topLeftTileY = gate->base[2];
             break;
         case RIGHT:
             topLeftTile = gate->base[0];
+            topLeftTileY = gate->base[0];
             break;
         default:
             assert(!"Not a valid direction type!");
             break;
         }
         x = topLeftTile->x / LUA_UNIT_PX + 1;
-        y = topLeftTile->y / LUA_UNIT_PX + 1;
+        y = topLeftTileY->y / LUA_UNIT_PX + 1;
 
-        switch (egDir)
+        distance = gate->max_len/LUA_UNIT_PX + 1 + endStone * 2;
+        if (endStone == 1)
+        {
+            pos = gate->max_len + 4; // pos is in pixels
+        } else {
+            pos = gate->max_len;
+        }
+
+        switch (direction)
         {
         case UP:
         case DOWN:
-            distance = ceil(gate->act->h / LUA_UNIT_PX);
             w = 6;
-            h = max_len + 6;
+            h = distance + 6;
             break;
         case LEFT:
         case RIGHT:
-            distance = ceil(gate->act->w / LUA_UNIT_PX);
-            w = max_len + 6;
+            w = distance + 6;
             h = 6;
             break;
         default:
             assert(!"Not a valid direction type!");
             break;
         }
-
-        int endStone = gate->has_end;
-        // set the position of the gate to closed (maximum extension)
-        int pos = distance*LUA_UNIT_PX-endStone*16-4;
 
         fprintf(fp, "{\n");
 
@@ -387,10 +402,12 @@ void write_gates(FILE *fp, struct cgl *cgl){
         write_int_entry(fp, "y", y);
         write_int_entry(fp, "w", w);
         write_int_entry(fp, "h", h);
+        write_int_entry(fp, "actW", actW);
+        write_int_entry(fp, "actH", actH);
         write_int_entry(fp, "direction", direction);
         write_int_entry(fp, "distance", distance);
         write_int_entry(fp, "pos", pos);
-        write_int_entry(fp, "endStrone", endStone);
+        write_int_entry(fp, "endStone", endStone);
         write_int_entry(fp, "XtoY", xToY);
 
         fprintf(fp, "},\n");
