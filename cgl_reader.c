@@ -34,12 +34,8 @@ int main(int argc, char *argv[]){
     printf("num magnets: %zu\n", cgl->nmagnets);
     printf("num fans: %zu\n", cgl->nfans);
     printf("num gates (oneway): %zu\n", cgl->ngates);
-    //struct airport ap;
+    printf("num rods: %zu\n", cgl->nbars);
 
-    // for (size_t j = 0; j < cgl->nairports; ++j) {
-    //    printf("num_cargo: %d\n", aps->num_cargo);
-    //    aps++;
-    // }
    
     for (struct airport *start = aps; aps < start + cgl->nairports; ++aps) {
        printf("num_cargo: %zu\n", aps->num_cargo);

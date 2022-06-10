@@ -52,6 +52,16 @@ enum rotates {
     CLOCKWISE = 2
 };
 
+enum orientations {
+    HORIZONTAL = 1,
+    VERTICAL = 2
+};
+
+enum gapTypes {
+    FIXED = 1,
+    VARIABLE = 2
+};
+
 
 void write_lua(FILE *fp, struct cgl *cgl);
 void write_file_start(FILE *fp);
@@ -62,6 +72,7 @@ void write_platforms(FILE *fp, struct cgl *cgl);
 void write_fans(FILE *fp, struct cgl *cgl);
 void write_magnets(FILE *fp, struct cgl *cgl);
 void write_airgens(FILE *fp, struct cgl *cgl);
+void write_bars(FILE *fp, struct cgl *cgl);
 void write_gates(FILE *fp, struct cgl *cgl);
 void write_table_end(FILE *fp, bool isLast);
 void write_int_entry(FILE *fp, char* key, int value);
@@ -69,6 +80,8 @@ enum pTypes map_cg_platform(int cgType);
 enum directions map_cg_direction(int cgDir);
 enum gratings map_cg_power(int cgPower);
 enum rotates map_cg_spin(int cgSpin);
+enum orientations map_cg_orientation(int cgOrientation);
+enum gapTypes map_cg_gap_type(int cgGaptype);
 
 
 #endif

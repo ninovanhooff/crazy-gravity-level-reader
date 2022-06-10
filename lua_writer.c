@@ -19,9 +19,12 @@ void write_lua(FILE *fp, struct cgl *cgl)
     write_table_start(fp, "specialT");
     write_platforms(fp, cgl);
     write_fans(fp, cgl);
-    write_airgens(fp, cgl);
     write_magnets(fp, cgl);
+    write_airgens(fp, cgl);
+    // todo: cannon
+    write_bars(fp, cgl);
     write_gates(fp, cgl);
+    // todo: key barrier
     write_table_end(fp, true);
 
     write_table_end(fp, true);
@@ -269,6 +272,63 @@ void write_magnets(FILE *fp, struct cgl *cgl){
     }
 }
 
+void write_bars(FILE *fp, struct cgl *cgl){
+    struct bar *bar = cgl->bars;
+
+    for (struct bar *start = bar; bar < start + cgl->nbars; ++bar)
+    {
+        enum orientations egOrientation = map_cg_orientation(bar->orientation);
+        int distance = bar->len / LUA_UNIT_PX + 3;
+        int x,y,w,h, speedMin, speedMax, fixedGap, gapSize, changeOften;
+        x = bar->beg->x / LUA_UNIT_PX + 1;
+        y = bar->beg->y / LUA_UNIT_PX + 1;
+        speedMin = bar->sspeed;
+        speedMax = bar->fspeed;
+        fixedGap = map_cg_gap_type(bar->gap_type);
+        gapSize = bar->gap / LUA_UNIT_PX;
+        changeOften = bar->freq; // freq is not the frequency, but a bool (int 0 or 1) indicating whether to change often
+        if (changeOften == 0)
+        {
+            // 1: yes; 2 = no
+            changeOften = 2;
+        }
+
+        switch (egOrientation)
+        {
+        case HORIZONTAL:
+            w = distance + 6;
+            h = 2;
+            break;
+        case VERTICAL:
+            h = distance + 6;
+            w = 2;
+            break;
+        default:
+            assert(!"Not a valid orientation type!");
+            break;
+        }
+
+        fprintf(fp, "{\n");
+
+        write_int_entry(fp, "sType", ROD);
+        write_int_entry(fp, "x", x);
+        write_int_entry(fp, "y", y);
+        write_int_entry(fp, "w", w);
+        write_int_entry(fp, "h", h);
+        write_int_entry(fp, "direction", egOrientation);
+        write_int_entry(fp, "distance", distance);
+        write_int_entry(fp, "speedMin", speedMin);
+        write_int_entry(fp, "speedMax", speedMax);
+        write_int_entry(fp, "fixdGap", fixedGap); // not a spelling mistake, foxdGap is without e in output format
+        write_int_entry(fp, "gapSize", gapSize);
+        write_int_entry(fp, "chngOften", changeOften);
+        write_int_entry(fp, "pos1", 20);
+        write_int_entry(fp, "pos2", 20); // todo?
+
+        fprintf(fp, "},\n");
+    }
+}
+
 
 /** One-way gates */
 void write_gates(FILE *fp, struct cgl *cgl){
@@ -286,7 +346,7 @@ void write_gates(FILE *fp, struct cgl *cgl){
         int actH = ceil(gate->act->h / LUA_UNIT_PX);
 
 
-        printf("gate egDir:%d orientation:%d gateType: %d gate_max_len: %f\n", egDir, gate->orient, gate->type, gate->max_len);
+        // printf("gate egDir:%d orientation:%d gateType: %d gate_max_len: %f\n", egDir, gate->orient, gate->type, gate->max_len);
 
         switch (gate->type)
         {
@@ -339,9 +399,9 @@ void write_gates(FILE *fp, struct cgl *cgl){
             break;
         }
 
-        printf("direction: %d\n", direction);
-        printf("gate base0X:%d base1X:%d base2X: %d base3X: %d base4X: %d\n", gate->base[0]->x, gate->base[1]->x, gate->base[2]->x, gate->base[3]->x, gate->base[4]->x);    
-        printf("gate base0Y:%d base1Y:%d base2Y: %d base3Y: %d base4Y: %d\n", gate->base[0]->y, gate->base[1]->y, gate->base[2]->y, gate->base[3]->y, gate->base[4]->y);    
+        // printf("direction: %d\n", direction);
+        // printf("gate base0X:%d base1X:%d base2X: %d base3X: %d base4X: %d\n", gate->base[0]->x, gate->base[1]->x, gate->base[2]->x, gate->base[3]->x, gate->base[4]->x);    
+        // printf("gate base0Y:%d base1Y:%d base2Y: %d base3Y: %d base4Y: %d\n", gate->base[0]->y, gate->base[1]->y, gate->base[2]->y, gate->base[3]->y, gate->base[4]->y);    
 
         struct tile* topLeftTile;
         struct tile* topLeftTileY;
@@ -511,6 +571,34 @@ enum rotates map_cg_spin(int cgSpin)
         return CLOCKWISE; 
     default:
         assert(!"Not a valid spin type!");
+        return -1;
+    }
+}
+
+enum orientations map_cg_orientation(int cgOrientation)
+{
+    switch (cgOrientation)
+    {
+    case Horizontal:
+        return HORIZONTAL;
+    case Vertical:
+        return VERTICAL;
+    default:
+        assert(!"Not a valid orientation type!");
+        return -1;
+    }
+}
+
+enum gapTypes map_cg_gap_type(int cgGapType)
+{
+    switch (cgGapType)
+    {
+    case Constant:
+        return FIXED;
+    case Variable:
+        return VARIABLE;
+    default:
+        assert(!"Not a valid gap type!");
         return -1;
     }
 }
