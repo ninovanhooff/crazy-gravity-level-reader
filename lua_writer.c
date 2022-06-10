@@ -21,7 +21,7 @@ void write_lua(FILE *fp, struct cgl *cgl)
     write_fans(fp, cgl);
     write_magnets(fp, cgl);
     write_airgens(fp, cgl);
-    // todo: cannon
+    write_cannons(fp, cgl);
     write_bars(fp, cgl);
     write_gates(fp, cgl);
     // todo: key barrier
@@ -324,6 +324,73 @@ void write_bars(FILE *fp, struct cgl *cgl){
         write_int_entry(fp, "chngOften", changeOften);
         write_int_entry(fp, "pos1", 20);
         write_int_entry(fp, "pos2", 20); // todo?
+
+        fprintf(fp, "},\n");
+    }
+}
+
+void write_cannons(FILE *fp, struct cgl *cgl){
+    struct cannon *cannon = cgl->cannons;
+
+    for (struct cannon *start = cannon; cannon < start + cgl->ncannons; ++cannon)
+    {
+        printf("speedx: %d, speedy: %d, dir: %d\n", cannon->speed_x, cannon->speed_y, cannon->dir);
+        int direction = map_cg_direction(cannon->dir);
+        printf("direction: %d, dir: %d\n", direction, cannon->dir);
+        int x,y,w,h,distance;
+        int startX = cannon->beg_base->x / LUA_UNIT_PX + 1;
+        int startY = cannon->beg_base->y / LUA_UNIT_PX + 1;
+        int endX = cannon->end_base->x / LUA_UNIT_PX + 1;
+        int endY = cannon->end_base->y / LUA_UNIT_PX + 1;
+        int speed = max(abs(cannon->speed_x), abs(cannon->speed_y));
+        int rate = cannon->fire_rate;
+
+        switch (direction)
+        {
+        case UP:
+            x = endX;
+            y = endY;
+            w = 3;
+            h = startY - endY - 2;
+            distance = h;
+            break;
+        case DOWN:
+            x = startX;
+            y = startY;
+            w = 3;
+            h = endY - startY - 3;
+            distance = h;
+            break;
+        case LEFT:
+            x = endX;
+            y = endY;
+            w = startX - endX - 2;
+            h = 3;
+            distance = w;
+            break;
+        case RIGHT:
+            x = startX;
+            y = startY;
+            w = endX - startX - 3;
+            h = 3;
+            distance = w;
+            break;
+        default:
+            assert(!"Not a valid direction");
+            break;
+        }
+
+        fprintf(fp, "{\n");
+
+        write_int_entry(fp, "sType", CANNON);
+        write_int_entry(fp, "x", x);
+        write_int_entry(fp, "y", y);
+        write_int_entry(fp, "w", w);
+        write_int_entry(fp, "h", h);
+        write_int_entry(fp, "direction", direction);
+        write_int_entry(fp, "distance", distance);
+        write_int_entry(fp, "speed", speed);
+        write_int_entry(fp, "rate", rate);
 
         fprintf(fp, "},\n");
     }
