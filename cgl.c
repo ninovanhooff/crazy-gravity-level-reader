@@ -573,7 +573,7 @@ int cgl_read_one_cano(struct cannon *cannon, FILE *fp)
 	nread = fread(buf, sizeof(uint8_t), CANO_HDR_SIZE, fp);
 	if (nread < CANO_HDR_SIZE)
 		return -EBADCANO;
-	cannon->dir = buf[0];
+	cannon->dir = buf[0] & 0x03;
 	err = read_short((int16_t*)buf2, 1, fp);
 	if (err)
 		return -EBADCANO;
