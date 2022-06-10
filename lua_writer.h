@@ -75,6 +75,7 @@ void write_airgens(FILE *fp, struct cgl *cgl);
 void write_cannons(FILE *fp, struct cgl *cgl);
 void write_bars(FILE *fp, struct cgl *cgl);
 void write_gates(FILE *fp, struct cgl *cgl);
+void write_lgates(FILE *fp, struct cgl *cgl);
 void write_table_end(FILE *fp, bool isLast);
 void write_int_entry(FILE *fp, char* key, int value);
 enum pTypes map_cg_platform(int cgType);

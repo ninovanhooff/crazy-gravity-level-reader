@@ -1,4 +1,4 @@
-FILENAME="nino3"
+FILENAME="nino4"
 clear
 echo "--- READING specials & levelProps"
 gcc -std=c99 -Wall -o cglreader *.c

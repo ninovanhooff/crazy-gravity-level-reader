@@ -24,7 +24,7 @@ void write_lua(FILE *fp, struct cgl *cgl)
     write_cannons(fp, cgl);
     write_bars(fp, cgl);
     write_gates(fp, cgl);
-    // todo: key barrier
+    write_lgates(fp, cgl);
     write_table_end(fp, true);
 
     write_table_end(fp, true);
@@ -396,6 +396,121 @@ void write_cannons(FILE *fp, struct cgl *cgl){
     }
 }
 
+
+/** Colr-key gates */
+void write_lgates(FILE *fp, struct cgl *cgl){
+    struct lgate *lgate = cgl->lgates;
+
+    for (struct lgate *start = lgate; lgate < start + cgl->nlgates; ++lgate)
+    {
+        int direction, distance, x, y, w, h, pos;
+        int endStone = lgate->has_end;
+
+        int actW = ceil(lgate->act->w / LUA_UNIT_PX);
+        int actH = ceil(lgate->act->h / LUA_UNIT_PX);
+        int red = lgate->keys[0];
+        int green = lgate->keys[1];
+        int blue = lgate->keys[2];
+        int yellow = lgate->keys[3];
+
+        // printf("lgate egDir:%d orientation:%d lgateType: %d lgate_max_len: %f\n", egDir, lgate->orient, lgate->type, lgate->max_len);
+
+        switch (lgate->type)
+        {
+        case GateLeft:
+            direction = RIGHT;
+            break;
+        case GateTop:
+            direction = DOWN;
+            break;
+        case GateRight:
+            direction = LEFT;
+            break;
+        case GateBottom:
+            direction = UP;
+            break;
+        default:
+            assert(!"Not a valid gate type!");
+            break;
+        }
+
+        printf("direction: %d\n", direction);
+        printf("lgate base0X:%d base1X:%d base2X: %d base3X: %d base4X: %d\n", lgate->base[0]->x, lgate->base[1]->x, lgate->base[2]->x, lgate->base[3]->x, lgate->base[4]->x);    
+        printf("lgate base0Y:%d base1Y:%d base2Y: %d base3Y: %d base4Y: %d\n", lgate->base[0]->y, lgate->base[1]->y, lgate->base[2]->y, lgate->base[3]->y, lgate->base[4]->y);    
+
+        struct tile* topLeftTile;
+        struct tile* topLeftTileY;
+        switch (direction)
+        {
+        case UP:
+            topLeftTile = lgate->base[0];
+            topLeftTileY = lgate->base[4];
+            break;
+        case DOWN:
+            topLeftTile = lgate->base[1];
+            topLeftTileY = lgate->base[0];
+            break;
+        case LEFT:
+            topLeftTile = lgate->base[4];
+            topLeftTileY = lgate->base[2];
+            break;
+        case RIGHT:
+            topLeftTile = lgate->base[0];
+            topLeftTileY = lgate->base[0];
+            break;
+        default:
+            assert(!"Not a valid direction type!");
+            break;
+        }
+        x = topLeftTile->x / LUA_UNIT_PX + 1;
+        y = topLeftTileY->y / LUA_UNIT_PX + 1;
+
+        distance = lgate->max_len/LUA_UNIT_PX + 1 + endStone * 2;
+        if (endStone == 1)
+        {
+            pos = lgate->max_len + 4; // pos is in pixels
+        } else {
+            pos = lgate->max_len;
+        }
+
+        switch (direction)
+        {
+        case UP:
+        case DOWN:
+            w = 6;
+            h = distance + 6;
+            break;
+        case LEFT:
+        case RIGHT:
+            w = distance + 6;
+            h = 6;
+            break;
+        default:
+            assert(!"Not a valid direction type!");
+            break;
+        }
+
+        fprintf(fp, "{\n");
+
+        write_int_entry(fp, "sType", BARRIER);
+        write_int_entry(fp, "x", x);
+        write_int_entry(fp, "y", y);
+        write_int_entry(fp, "w", w);
+        write_int_entry(fp, "h", h);
+        write_int_entry(fp, "actW", actW);
+        write_int_entry(fp, "actH", actH);
+        write_int_entry(fp, "direction", direction);
+        write_int_entry(fp, "distance", distance);
+        write_int_entry(fp, "pos", pos);
+        write_int_entry(fp, "endStone", endStone);
+        write_int_entry(fp, "red", red);
+        write_int_entry(fp, "green", green);
+        write_int_entry(fp, "blue", blue);
+        write_int_entry(fp, "yellow", yellow);
+
+        fprintf(fp, "},\n");
+    }
+}
 
 /** One-way gates */
 void write_gates(FILE *fp, struct cgl *cgl){

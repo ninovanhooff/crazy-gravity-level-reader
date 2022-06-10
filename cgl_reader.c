@@ -35,7 +35,8 @@ int main(int argc, char *argv[]){
     printf("num airgens: %zu\n", cgl->nairgens);
     printf("num cannons: %zu\n", cgl->ncannons);
     printf("num fans: %zu\n", cgl->nfans);
-    printf("num gates (oneway): %zu\n", cgl->ngates);
+    printf("num oneway gates: %zu\n", cgl->ngates);
+    printf("num color gates : %zu\n", cgl->nlgates);
     printf("num rods: %zu\n", cgl->nbars);
 
    
