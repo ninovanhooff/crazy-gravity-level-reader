@@ -452,7 +452,7 @@ void write_lgates(FILE *fp, struct cgl *cgl){
             break;
         case LEFT:
             topLeftTile = lgate->base[4];
-            topLeftTileY = lgate->base[2];
+            topLeftTileY = lgate->base[1];
             break;
         case RIGHT:
             topLeftTile = lgate->base[0];
