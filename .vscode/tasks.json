@@ -2,7 +2,7 @@
     "tasks": [
         {
             "type": "shell",
-            "command": "./compile.sh",
+            "command": "./build.sh",
             "label": "gcc",
             "problemMatcher": [],
             "group": {

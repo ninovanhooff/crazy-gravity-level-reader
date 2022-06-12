@@ -466,12 +466,7 @@ void write_lgates(FILE *fp, struct cgl *cgl){
         y = topLeftTileY->y / LUA_UNIT_PX + 1;
 
         distance = lgate->max_len/LUA_UNIT_PX + 1 + endStone * 2;
-        if (endStone == 1)
-        {
-            pos = lgate->max_len + 4; // pos is in pixels
-        } else {
-            pos = lgate->max_len;
-        }
+        pos = distance*LUA_UNIT_PX - endStone*16 -4;
 
         switch (direction)
         {
@@ -613,12 +608,7 @@ void write_gates(FILE *fp, struct cgl *cgl){
         y = topLeftTileY->y / LUA_UNIT_PX + 1;
 
         distance = gate->max_len/LUA_UNIT_PX + 1 + endStone * 2;
-        if (endStone == 1)
-        {
-            pos = gate->max_len + 4; // pos is in pixels
-        } else {
-            pos = gate->max_len;
-        }
+        pos = distance*LUA_UNIT_PX - endStone*16 -4;
 
         switch (direction)
         {
