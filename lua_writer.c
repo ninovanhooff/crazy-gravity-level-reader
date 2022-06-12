@@ -334,9 +334,9 @@ void write_cannons(FILE *fp, struct cgl *cgl){
 
     for (struct cannon *start = cannon; cannon < start + cgl->ncannons; ++cannon)
     {
-        printf("speedx: %d, speedy: %d, dir: %d\n", cannon->speed_x, cannon->speed_y, cannon->dir);
+        // printf("speedx: %d, speedy: %d, dir: %d\n", cannon->speed_x, cannon->speed_y, cannon->dir);
         int direction = map_cg_direction(cannon->dir);
-        printf("direction: %d, dir: %d\n", direction, cannon->dir);
+        // printf("direction: %d, dir: %d\n", direction, cannon->dir);
         int x,y,w,h,distance;
         int startX = cannon->beg_base->x / LUA_UNIT_PX + 1;
         int startY = cannon->beg_base->y / LUA_UNIT_PX + 1;
@@ -434,9 +434,9 @@ void write_lgates(FILE *fp, struct cgl *cgl){
             break;
         }
 
-        printf("direction: %d\n", direction);
-        printf("lgate base0X:%d base1X:%d base2X: %d base3X: %d base4X: %d\n", lgate->base[0]->x, lgate->base[1]->x, lgate->base[2]->x, lgate->base[3]->x, lgate->base[4]->x);    
-        printf("lgate base0Y:%d base1Y:%d base2Y: %d base3Y: %d base4Y: %d\n", lgate->base[0]->y, lgate->base[1]->y, lgate->base[2]->y, lgate->base[3]->y, lgate->base[4]->y);    
+        // printf("direction: %d\n", direction);
+        // printf("lgate base0X:%d base1X:%d base2X: %d base3X: %d base4X: %d\n", lgate->base[0]->x, lgate->base[1]->x, lgate->base[2]->x, lgate->base[3]->x, lgate->base[4]->x);    
+        // printf("lgate base0Y:%d base1Y:%d base2Y: %d base3Y: %d base4Y: %d\n", lgate->base[0]->y, lgate->base[1]->y, lgate->base[2]->y, lgate->base[3]->y, lgate->base[4]->y);    
 
         struct tile* topLeftTile;
         struct tile* topLeftTileY;
