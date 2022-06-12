@@ -282,11 +282,11 @@ void write_bars(FILE *fp, struct cgl *cgl){
         int x,y,w,h, speedMin, speedMax, fixedGap, gapSize, changeOften;
         x = bar->beg->x / LUA_UNIT_PX + 1;
         y = bar->beg->y / LUA_UNIT_PX + 1;
-        speedMin = bar->sspeed;
-        speedMax = bar->fspeed;
+        speedMin = bar->min_s + 1;
+        speedMax = bar->max_s + 1;
         fixedGap = map_cg_gap_type(bar->gap_type);
-        gapSize = bar->gap / LUA_UNIT_PX;
-        changeOften = bar->freq; // freq is not the frequency, but a bool (int 0 or 1) indicating whether to change often
+        gapSize = bar->gap;
+        changeOften = bar->freq; // freq is not the frequency, but a bool (int 0 or 1) indicating whether to change often, aka "frequent"
         if (changeOften == 0)
         {
             // 1: yes; 2 = no
@@ -322,8 +322,8 @@ void write_bars(FILE *fp, struct cgl *cgl){
         write_int_entry(fp, "fixdGap", fixedGap); // not a spelling mistake, foxdGap is without e in output format
         write_int_entry(fp, "gapSize", gapSize);
         write_int_entry(fp, "chngOften", changeOften);
-        write_int_entry(fp, "pos1", 20);
-        write_int_entry(fp, "pos2", 20); // todo?
+        write_int_entry(fp, "pos1", 0);
+        write_int_entry(fp, "pos2", 20);
 
         fprintf(fp, "},\n");
     }
