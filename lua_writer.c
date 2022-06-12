@@ -125,12 +125,12 @@ void write_fans(FILE *fp, struct cgl *cgl){
         case DOWN:
             distance = ceil(fan->act->h / LUA_UNIT_PX);
             w = fan->act->w / LUA_UNIT_PX;
-            h = (fan->base->h + fan->pipes->h + fan->act->h) / LUA_UNIT_PX;
+            h = distance + 8;
             break;
         case LEFT:
         case RIGHT:
             distance = ceil(fan->act->w / LUA_UNIT_PX);
-            w = (fan->base->w + fan->pipes->w + fan->act->w) / LUA_UNIT_PX;
+            w = distance + 8;
             h = fan->base->h / LUA_UNIT_PX;
             break;
         default:
@@ -185,12 +185,12 @@ void write_airgens(FILE *fp, struct cgl *cgl){
         case DOWN:
             distance = ceil(airgen->act->h / LUA_UNIT_PX);
             w = airgen->act->w / LUA_UNIT_PX;
-            h = (airgen->base->h + airgen->pipes->h + airgen->act->h) / LUA_UNIT_PX;
+            h = distance + 8;
             break;
         case LEFT:
         case RIGHT:
             distance = ceil(airgen->act->w / LUA_UNIT_PX);
-            w = (airgen->base->w + airgen->pipes->w + airgen->act->w) / LUA_UNIT_PX;
+            w = distance + 8;
             h = airgen->base->h / LUA_UNIT_PX;
             break;
         default:
@@ -296,12 +296,12 @@ void write_bars(FILE *fp, struct cgl *cgl){
         switch (egOrientation)
         {
         case HORIZONTAL:
-            w = distance + 6;
-            h = 2;
+            w = distance + 3;
+            h = 3;
             break;
         case VERTICAL:
-            h = distance + 6;
-            w = 2;
+            h = distance + 3;
+            w = 3;
             break;
         default:
             assert(!"Not a valid orientation type!");
@@ -351,29 +351,29 @@ void write_cannons(FILE *fp, struct cgl *cgl){
             x = endX;
             y = endY;
             w = 3;
-            h = startY - endY - 2;
-            distance = h;
+            distance = startY - endY - 2;
+            h = distance + 5;
             break;
         case DOWN:
             x = startX;
             y = startY;
             w = 3;
-            h = endY - startY - 3;
-            distance = h;
+            distance = endY - startY - 3;
+            h = distance + 5;
             break;
         case LEFT:
             x = endX;
             y = endY;
-            w = startX - endX - 2;
+            distance = startX - endX - 2;
+            w = distance + 5;
             h = 3;
-            distance = w;
             break;
         case RIGHT:
             x = startX;
             y = startY;
-            w = endX - startX - 3;
+            distance = endX - startX - 3;
+            w = distance + 5;
             h = 3;
-            distance = w;
             break;
         default:
             assert(!"Not a valid direction");
@@ -478,11 +478,11 @@ void write_lgates(FILE *fp, struct cgl *cgl){
         case UP:
         case DOWN:
             w = 6;
-            h = distance + 6;
+            h = distance + 4;
             break;
         case LEFT:
         case RIGHT:
-            w = distance + 6;
+            w = distance + 4;
             h = 6;
             break;
         default:
@@ -624,13 +624,13 @@ void write_gates(FILE *fp, struct cgl *cgl){
         {
         case UP:
         case DOWN:
-            w = 6;
+            w = 12;
             h = distance + 6;
             break;
         case LEFT:
         case RIGHT:
             w = distance + 6;
-            h = 6;
+            h = 12;
             break;
         default:
             assert(!"Not a valid direction type!");
