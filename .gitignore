@@ -4,8 +4,11 @@ LEVEL20.CGL
 test.lua
 cglreader
 freecg
+
 intermediates
 test-levels
 lua-levels
+images-out
+
 .DS_Store
 **/.DS_Store

@@ -615,11 +615,11 @@ void write_gates(FILE *fp, struct cgl *cgl){
         case UP:
         case DOWN:
             w = 12;
-            h = distance + 6;
+            h = distance + 4;
             break;
         case LEFT:
         case RIGHT:
-            w = distance + 6;
+            w = distance + 4;
             h = 12;
             break;
         default:
