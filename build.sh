@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e # exit on error
-FILENAME="User001"
+FILENAME="LEVEL06"
 clear
 echo "--- COMPILING cglreader"
 ./compile.sh
@@ -9,4 +9,4 @@ echo "--- READING specials & levelProps"
 echo "--- Copying levels to game sources"
 cp -R ./lua-levels/* ../CrazyGravityPlaydate/Source/levels
 echo "--- Opening Simulator"
-pdc ../CrazyGravityPlaydate/Source /tmp/cgpd.pdx && open /tmp/cgpd.pdx
+pdc ../CrazyGravityPlaydate/Source /tmp/gravityexpress.pdx && open /tmp/gravityexpress.pdx
