@@ -485,6 +485,11 @@ void write_lgates(FILE *fp, struct cgl *cgl){
             break;
         }
 
+        if (endStone == 0)
+        {
+            endStone = 2; //lua: 1:endstone; 2: no endstone
+        }
+
         fprintf(fp, "{\n");
 
         write_int_entry(fp, "sType", BARRIER);
@@ -625,6 +630,11 @@ void write_gates(FILE *fp, struct cgl *cgl){
         default:
             assert(!"Not a valid direction type!");
             break;
+        }
+
+        if (endStone == 0)
+        {
+            endStone = 2; //lua: 1:endstone; 2: no endstone
         }
 
         fprintf(fp, "{\n");
