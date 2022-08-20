@@ -397,7 +397,7 @@ void write_cannons(FILE *fp, struct cgl *cgl){
 }
 
 
-/** Colr-key gates */
+/** Color-key gates */
 void write_lgates(FILE *fp, struct cgl *cgl){
     struct lgate *lgate = cgl->lgates;
 
@@ -408,10 +408,11 @@ void write_lgates(FILE *fp, struct cgl *cgl){
 
         int actW = ceil(lgate->act->w / LUA_UNIT_PX);
         int actH = ceil(lgate->act->h / LUA_UNIT_PX);
-        int red = lgate->keys[0];
-        int green = lgate->keys[1];
-        int blue = lgate->keys[2];
-        int yellow = lgate->keys[3];
+        // in lua false is represented as 2
+        int red = lgate->keys[0] ? 1 : 2;
+        int green = lgate->keys[1] ? 1 : 2;
+        int blue = lgate->keys[2] ? 1 : 2;
+        int yellow = lgate->keys[3] ? 1 : 2;
 
         // printf("lgate egDir:%d orientation:%d lgateType: %d lgate_max_len: %f\n", egDir, lgate->orient, lgate->type, lgate->max_len);
 
